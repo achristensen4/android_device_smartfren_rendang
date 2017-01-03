@@ -63,7 +63,7 @@ on boot
 
 on charger
    wait /dev/block/bootdevice/by-name/system
-   mount ext4 /dev/block/bootdevice/by-name/system /system ro barrier=1
+   mount ext4 /dev/block/bootdevice/by-name/system /system rw barrier=1
    chown root system /sys/class/power_supply/bms/current_now
    chown root system /sys/class/power_supply/bms/voltage_ocv
    chmod 0664 /sys/class/power_supply/bms/current_now
@@ -82,20 +82,18 @@ on post-fs-data
 on property:service.bootanim.exit=1
     # KSM options
     write /sys/kernel/mm/ksm/pages_to_scan 100
-    write /sys/kernel/mm/ksm/sleep_millisecs 100
+    write /sys/kernel/mm/ksm/sleep_millisecs 10
     write /sys/kernel/mm/ksm/deferred_timer 1
     write /sys/kernel/mm/ksm/run 1
 
 service sdcard /system/bin/sdcard -u 1023 -g 1023 -l /data/media /mnt/shell/emulated
-    class late_start
+    class main
 
 service fuse_sdcard1 /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/sdcard1 /storage/sdcard1
-    class late_start
-    disabled
+    class main
 
 service fuse_usbdisk /system/bin/sdcard -u 1023 -g 1023 -w 1023 -d /mnt/media_rw/usbdisk /storage/usbdisk
-    class late_start
-    disabled
+    class main
 
 service vm_bms /system/bin/vm_bms
     class core
@@ -103,11 +101,11 @@ service vm_bms /system/bin/vm_bms
     group root
 
 service cnd /system/bin/cnd
-    class late_start
+    class main
     socket cnd stream 660 root inet
 
 service dpmd /system/bin/dpmd
-    class late_start
+    class main
     socket dpmd stream 660 root system
 
 service imsqmidaemon /system/bin/imsqmidaemon
@@ -121,7 +119,6 @@ service imsdatadaemon /system/bin/imsdatadaemon
     user system
     socket ims_datad stream 0660 system radio
     group system wifi radio inet net_raw log qcom_diag net_admin
-    disabled
 
 on property:sys.ims.QMI_DAEMON_STATUS=1
     start imsdatadaemon
@@ -131,13 +128,11 @@ service ims_rtp_daemon /system/bin/ims_rtp_daemon
    user system
    socket ims_rtpd stream 0660 system radio
    group radio net_raw diag qcom_diag log
-   disabled
 
 service imscmservice /system/bin/imscmservice
    class main
    user system
    group radio net_raw diag qcom_diag log
-   disabled
 
 on property:sys.ims.DATA_DAEMON_STATUS=1
     start ims_rtp_daemon
