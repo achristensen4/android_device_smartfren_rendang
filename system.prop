@@ -25,11 +25,11 @@ persist.radio.rat_on=combine
 ro.cdma.force_plmn_lookup=true
 ro.cdma.home.operator.alpha=Smartfren
 ro.telephony.default_network=8,1
-telephony.lteOnCdmaDevice=1
+telephony.lteOnCdmaDevice=0
 ro.ril.multi_rat_capable=true
 
 # set max background services
 ro.config.max_starting_bg=8
 
 # use 3 threads max for dex2oat
-ro.sys.fw.dex2oat_thread_count=3
+ro.sys.fw.dex2oat_thread_count=1
